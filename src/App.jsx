@@ -1,9 +1,15 @@
-import React from "react";
-import Home from "./components/Home.jsx";
+import React, { useState } from "react";
+import Insights from "./components/Insights.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 function App() {
+  const [showInsights, setShowInsights] = useState(false);
   return (
     <>
-      <Home />
+      {showInsights ? (
+        <Insights onBack={() => setShowInsights(false)} />
+      ) : (
+        <Dashboard onLogMoodClick={() => setShowInsights(true)} />
+      )}
     </>
   );
 }

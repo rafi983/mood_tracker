@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Logo from "../assets/Logo icon.png";
 import avatar from "../assets/Avatar.png";
@@ -8,8 +7,9 @@ import MoodIcon2 from "../assets/Mood Icon_2.svg";
 import MoodIcon3 from "../assets/Mood Icon_3.svg";
 import MoodIcon4 from "../assets/Mood Icon_4.svg";
 import MoodIcon5 from "../assets/Mood Icon_5.svg";
+import ChartBar from "./ChartBar";
 
-export default function Home() {
+export default function Dashboard({ onLogMoodClick }) {
   const statsCards = [
     {
       title: "Average Mood",
@@ -214,7 +214,10 @@ export default function Home() {
             How are you feeling today?
           </h2>
           <p className="text-gray-600 mb-10">Wednesday, April 16th, 2025</p>
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold transition-colors">
+          <button
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold transition-colors"
+            onClick={onLogMoodClick}
+          >
             Log today's mood
           </button>
         </main>
@@ -275,29 +278,3 @@ export default function Home() {
     </div>
   );
 }
-function ChartBar({ height, color, emoji, date }) {
-  const [month, day] = date.split(" ");
-
-  return (
-    <div className="flex flex-col items-center">
-      <div className="relative">
-        <div className={`w-12 ${height} ${color} rounded-full relative`}>
-          <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center text-lg shadow-sm border border-gray-100">
-            {emoji}
-          </div>
-        </div>
-      </div>
-      <div className="mt-3 text-center">
-        <div className="text-sm font-medium text-gray-700">{month}</div>
-        <div className="text-xs text-gray-500">{day}</div>
-      </div>
-    </div>
-  );
-}
-
-ChartBar.propTypes = {
-  height: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
-  emoji: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
-};
