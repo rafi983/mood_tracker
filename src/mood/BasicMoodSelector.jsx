@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import veryHappyIcon from "../assets/images/icon-very-happy-color.svg";
+import happyIcon from "../assets/images/icon-happy-color.svg";
+import neutralIcon from "../assets/images/icon-neutral-color.svg";
+import sadIcon from "../assets/images/icon-sad-color.svg";
+import verySadIcon from "../assets/images/icon-very-sad-color.svg";
 
 export default function BasicMoodSelector({ moodData, onNext }) {
   const [selectedMood, setSelectedMood] = useState(
@@ -9,35 +14,35 @@ export default function BasicMoodSelector({ moodData, onNext }) {
     {
       id: "very-happy",
       label: "Very Happy",
-      emoji: "😊",
+      icon: veryHappyIcon,
       bgColor: "bg-orange-100",
       emojiColor: "text-orange-500",
     },
     {
       id: "happy",
       label: "Happy",
-      emoji: "😄",
+      icon: happyIcon,
       bgColor: "bg-green-100",
       emojiColor: "text-green-500",
     },
     {
       id: "neutral",
       label: "Neutral",
-      emoji: "😐",
+      icon: neutralIcon,
       bgColor: "bg-blue-100",
       emojiColor: "text-blue-500",
     },
     {
       id: "sad",
       label: "Sad",
-      emoji: "😢",
+      icon: sadIcon,
       bgColor: "bg-purple-100",
       emojiColor: "text-purple-500",
     },
     {
       id: "very-sad",
       label: "Very Sad",
-      emoji: "😭",
+      icon: verySadIcon,
       bgColor: "bg-pink-100",
       emojiColor: "text-pink-500",
     },
@@ -85,9 +90,13 @@ export default function BasicMoodSelector({ moodData, onNext }) {
               </span>
             </div>
             <div
-              className={`w-6 h-6 rounded-full ${mood.bgColor} flex items-center justify-center text-sm`}
+              className={`w-8 h-8 rounded-full ${mood.bgColor} flex items-center justify-center text-sm`}
             >
-              {mood.emoji}
+              <img
+                src={mood.icon}
+                alt={`${mood.label} icon`}
+                className="w-6 h-6"
+              />
             </div>
           </label>
         ))}
