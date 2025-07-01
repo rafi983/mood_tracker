@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "../assets/Logo icon.png";
 import avatar from "../assets/Avatar.png";
 
-export default function Header() {
+export default function Header({ showBackButton, onBackClick }) {
   return (
     <header className="flex justify-between items-center mb-16">
       <div className="flex items-center gap-3">
@@ -13,11 +13,21 @@ export default function Header() {
           Mood tracker
         </span>
       </div>
-      <div className="flex items-center gap-2 cursor-pointer">
-        <div className="w-9 h-9 rounded-full bg-gray-300">
-          <img src={avatar} alt="avatar" />
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 cursor-pointer">
+          <div className="w-9 h-9 rounded-full bg-gray-300">
+            <img src={avatar} alt="avatar" />
+          </div>
+          <span className="text-gray-500 text-sm">▼</span>
         </div>
-        <span className="text-gray-500 text-sm">▼</span>
+        {showBackButton && (
+          <button
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+            onClick={onBackClick}
+          >
+            Back
+          </button>
+        )}
       </div>
     </header>
   );

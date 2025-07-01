@@ -6,17 +6,17 @@ import { createMoodIcon, moodColors, moodIcons } from "../utils/moodUtils";
 
 export default function Insights({ onBack }) {
   const chartBars = [
-    { height: "h-32", mood: 5, date: "March 31" },
-    { height: "h-48", mood: 2, date: "April 02" },
-    { height: "h-24", mood: 1, date: "April 04" },
-    { height: "h-36", mood: 3, date: "April 06" },
-    { height: "h-52", mood: 2, date: "April 07" },
-    { height: "h-64", mood: 4, date: "April 09" },
-    { height: "h-28", mood: 5, date: "April 10" },
-    { height: "h-44", mood: 3, date: "April 12" },
-    { height: "h-56", mood: 2, date: "April 13" },
-    { height: "h-26", mood: 1, date: "April 14" },
-    { height: "h-68", mood: 4, date: "April 15" },
+    { height: "h-32 max-sm:h-20", mood: 5, date: "March 31" },
+    { height: "h-48 max-sm:h-32", mood: 2, date: "April 02" },
+    { height: "h-24 max-sm:h-16", mood: 1, date: "April 04" },
+    { height: "h-36 max-sm:h-24", mood: 3, date: "April 06" },
+    { height: "h-52 max-sm:h-36", mood: 2, date: "April 07" },
+    { height: "h-64 max-sm:h-44", mood: 4, date: "April 09" },
+    { height: "h-28 max-sm:h-20", mood: 5, date: "April 10" },
+    { height: "h-44 max-sm:h-28", mood: 3, date: "April 12" },
+    { height: "h-56 max-sm:h-40", mood: 2, date: "April 13" },
+    { height: "h-26 max-sm:h-16", mood: 1, date: "April 14" },
+    { height: "h-68 max-sm:h-48", mood: 4, date: "April 15" },
   ];
 
   const processedChartBars = chartBars.map((bar) => ({
@@ -32,7 +32,7 @@ export default function Insights({ onBack }) {
   }));
 
   return (
-    <PageLayout>
+    <PageLayout showBackButton={!!onBack} onBackClick={onBack}>
       <main className="text-center mb-16">
         <h1 className="text-4xl text-indigo-600 mb-4 font-normal">
           Hello, Lisa!
@@ -41,39 +41,33 @@ export default function Insights({ onBack }) {
           How are you feeling today?
         </h2>
         <p className="text-gray-600 mb-10">Wednesday, April 16th, 2025</p>
-        {onBack && (
-          <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-            onClick={onBack}
-          >
-            Back
-          </button>
-        )}
       </main>
 
       {/* Main Container with 32px gap */}
-      <div className="flex gap-8 mb-8">
+      <div className="flex max-lg:flex-col gap-8 max-lg:gap-6 mb-8">
         {/* Current Mood Section */}
-        <div className="p-8 bg-white/70 backdrop-blur-sm border-0 shadow-lg rounded-lg w-[670px] h-[340px]">
-          <div className="flex items-center justify-between h-full">
-            <div className="flex-1 pr-12">
-              <p className="text-gray-500 text-xl mb-2">{"I'm feeling"}</p>
-              <h4 className="text-5xl font-bold text-gray-800 mb-12">
+        <div className="p-6 max-sm:p-4 bg-white/70 backdrop-blur-sm border-0 shadow-lg rounded-lg flex-1 lg:w-[670px] lg:h-[340px] max-lg:min-h-[280px]">
+          <div className="flex max-sm:flex-col items-center max-sm:items-start justify-between h-full max-sm:gap-4">
+            <div className="flex-1 max-sm:w-full pr-12 max-sm:pr-0">
+              <p className="text-gray-500 text-xl max-sm:text-lg mb-2">
+                {"I'm feeling"}
+              </p>
+              <h4 className="text-5xl max-sm:text-3xl font-bold text-gray-800 mb-12 max-sm:mb-6">
                 Very Happy
               </h4>
 
-              <div className="flex items-start gap-4">
-                <div className="text-blue-500 text-5xl font-bold leading-none mt-1">
+              <div className="flex items-start gap-4 max-sm:gap-3">
+                <div className="text-blue-500 text-5xl max-sm:text-3xl font-bold leading-none mt-1">
                   "
                 </div>
-                <p className="text-gray-700 italic text-xl leading-relaxed pt-2">
+                <p className="text-gray-700 italic text-xl max-sm:text-lg leading-relaxed pt-2">
                   When your heart is full, share your light with the world.
                 </p>
               </div>
             </div>
 
-            <div className="flex-shrink-0">
-              <div className="w-48 h-48 flex items-center justify-center">
+            <div className="flex-shrink-0 max-sm:w-full max-sm:flex max-sm:justify-center">
+              <div className="w-48 h-48 max-sm:w-32 max-sm:h-32 flex items-center justify-center">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Feeling%20Icon%20Container-bD3Ohd1Skd6lWdei6coeEdOnREsZnK.png"
                   alt="Very Happy Emoji"
@@ -84,7 +78,7 @@ export default function Insights({ onBack }) {
                   }}
                 />
                 <div
-                  className="w-48 h-48 bg-yellow-300 rounded-full flex items-center justify-center text-8xl"
+                  className="w-48 h-48 max-sm:w-32 max-sm:h-32 bg-yellow-300 rounded-full flex items-center justify-center text-8xl max-sm:text-5xl"
                   style={{ display: "none" }}
                 >
                   😊
@@ -95,9 +89,9 @@ export default function Insights({ onBack }) {
         </div>
 
         {/* Sleep & Reflection with 20px gap */}
-        <div className="w-[568px] flex flex-col gap-5">
+        <div className="flex-1 lg:w-[568px] flex flex-col gap-5">
           {/* Sleep Section */}
-          <div className="p-6 bg-white border-0 shadow-lg rounded-lg h-[160px]">
+          <div className="p-6 max-sm:p-4 bg-white border-0 shadow-lg rounded-lg lg:h-[160px] max-lg:min-h-[120px]">
             <div className="flex items-center gap-3 mb-4">
               <div className="text-gray-600">
                 <svg
@@ -122,7 +116,7 @@ export default function Insights({ onBack }) {
           </div>
 
           {/* Reflection Section */}
-          <div className="p-6 bg-white border-0 shadow-lg rounded-lg h-[160px]">
+          <div className="p-6 max-sm:p-4 bg-white border-0 shadow-lg rounded-lg lg:h-[160px] max-lg:min-h-[120px]">
             <div className="flex items-center gap-3 mb-4">
               <div className="text-gray-600">
                 <svg
@@ -193,36 +187,41 @@ export default function Insights({ onBack }) {
           </StatsCard>
         </div>
 
-        <div className="lg:col-span-2 bg-white rounded-2xl p-8 shadow-sm">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8">
+        <div className="lg:col-span-2 bg-white rounded-2xl p-8 max-sm:p-4 shadow-sm">
+          <h3 className="text-2xl max-sm:text-xl font-bold text-gray-900 mb-8 max-sm:mb-6">
             Mood and sleep trends
           </h3>
 
           <div className="relative">
-            <div className="absolute left-0 top-0 h-80 flex flex-col justify-between text-sm text-gray-600 -ml-2">
-              <div className="flex items-center gap-2 h-4">
+            <div className="absolute left-0 top-0 h-80 max-sm:h-60 flex flex-col justify-between text-sm max-sm:text-xs text-gray-600 -ml-2 max-sm:-ml-1">
+              <div className="flex items-center gap-2 max-sm:gap-1 h-4">
                 <span>💤</span>
-                <span>9+ hours</span>
+                <span className="max-sm:hidden">9+ hours</span>
+                <span className="sm:hidden">9+h</span>
               </div>
-              <div className="flex items-center gap-2 h-4">
+              <div className="flex items-center gap-2 max-sm:gap-1 h-4">
                 <span>💤</span>
-                <span>7-8 hours</span>
+                <span className="max-sm:hidden">7-8 hours</span>
+                <span className="sm:hidden">7-8h</span>
               </div>
-              <div className="flex items-center gap-2 h-4">
+              <div className="flex items-center gap-2 max-sm:gap-1 h-4">
                 <span>💤</span>
-                <span>5-6 hours</span>
+                <span className="max-sm:hidden">5-6 hours</span>
+                <span className="sm:hidden">5-6h</span>
               </div>
-              <div className="flex items-center gap-2 h-4">
+              <div className="flex items-center gap-2 max-sm:gap-1 h-4">
                 <span>💤</span>
-                <span>3-4 hours</span>
+                <span className="max-sm:hidden">3-4 hours</span>
+                <span className="sm:hidden">3-4h</span>
               </div>
-              <div className="flex items-center gap-2 h-4">
+              <div className="flex items-center gap-2 max-sm:gap-1 h-4">
                 <span>💤</span>
-                <span>0-2 hours</span>
+                <span className="max-sm:hidden">0-2 hours</span>
+                <span className="sm:hidden">0-2h</span>
               </div>
             </div>
 
-            <div className="ml-24 h-80 flex items-end justify-between gap-2">
+            <div className="ml-24 max-sm:ml-12 h-80 max-sm:h-60 flex items-end justify-between gap-2 max-sm:overflow-x-auto">
               {processedChartBars.map((bar, idx) => (
                 <ChartBar key={idx} {...bar} />
               ))}
