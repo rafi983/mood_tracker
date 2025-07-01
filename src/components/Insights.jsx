@@ -1,387 +1,235 @@
 import React from "react";
-
-import Logo from "../assets/Logo icon.png";
-import avatar from "../assets/Avatar.png";
-import MoodIcon from "../assets/Mood Icon.svg";
-import MoodIcon2 from "../assets/Mood Icon_2.svg";
-import MoodIcon3 from "../assets/Mood Icon_3.svg";
-import MoodIcon4 from "../assets/Mood Icon_4.svg";
-import MoodIcon5 from "../assets/Mood Icon_5.svg";
+import PageLayout from "./PageLayout";
+import StatsCard from "./StatsCard";
 import ChartBar from "./ChartBar";
+import { createMoodIcon, moodColors, moodIcons } from "../utils/moodUtils";
 
 export default function Insights({ onBack }) {
-  const statsCards = [
-    {
-      title: "Average Mood",
-      subtitle: "(Last 5 check-ins)",
-      content: (
-        <div className="bg-[#89CAFF] text-white p-4 rounded-2xl relative overflow-hidden pt-9">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
-          <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-y-4 translate-x-4"></div>
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <img src={MoodIcon3} alt="Mood Icon" className="w-6 h-6" />
-              </div>
-              <span className="text-2xl font-bold text-gray-800">Neutral</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-700 pb-4">
-              <span className="text-lg">→</span>
-              <span className="text-sm font-medium">
-                Same as the previous 5 check-ins
-              </span>
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: "Average Sleep",
-      subtitle: "(Last 5 check-ins)",
-      content: (
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white p-5 rounded-xl pt-9">
-          <div className="text-2xl font-bold mb-2 flex items-center gap-2">
-            💤 5-6 Hours
-          </div>
-          <div className="text-sm opacity-90 flex items-center gap-1 pb-3">
-            ↗ Increase from the previous 5 <br /> check-ins
-          </div>
-        </div>
-      ),
-    },
+  const chartBars = [
+    { height: "h-32", mood: 5, date: "March 31" },
+    { height: "h-48", mood: 2, date: "April 02" },
+    { height: "h-24", mood: 1, date: "April 04" },
+    { height: "h-36", mood: 3, date: "April 06" },
+    { height: "h-52", mood: 2, date: "April 07" },
+    { height: "h-64", mood: 4, date: "April 09" },
+    { height: "h-28", mood: 5, date: "April 10" },
+    { height: "h-44", mood: 3, date: "April 12" },
+    { height: "h-56", mood: 2, date: "April 13" },
+    { height: "h-26", mood: 1, date: "April 14" },
+    { height: "h-68", mood: 4, date: "April 15" },
   ];
 
-  const chartBars = [
-    {
-      height: "h-32",
-      color: "bg-purple-400",
-      emoji: (
-        <img
-          src={MoodIcon5}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "March 31",
-    },
-    {
-      height: "h-48",
-      color: "bg-green-400",
-      emoji: (
-        <img
-          src={MoodIcon2}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 02",
-    },
-    {
-      height: "h-24",
-      color: "bg-red-400",
-      emoji: (
-        <img
-          src={MoodIcon}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 04",
-    },
-    {
-      height: "h-36",
-      color: "bg-blue-400",
-      emoji: (
-        <img
-          src={MoodIcon3}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 06",
-    },
-    {
-      height: "h-52",
-      color: "bg-green-400",
-      emoji: (
-        <img
-          src={MoodIcon2}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 07",
-    },
-    {
-      height: "h-64",
-      color: "bg-orange-400",
-      emoji: (
-        <img
-          src={MoodIcon4}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 09",
-    },
-    {
-      height: "h-28",
-      color: "bg-purple-400",
-      emoji: (
-        <img
-          src={MoodIcon5}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 10",
-    },
-    {
-      height: "h-44",
-      color: "bg-blue-400",
-      emoji: (
-        <img
-          src={MoodIcon3}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 12",
-    },
-    {
-      height: "h-56",
-      color: "bg-green-400",
-      emoji: (
-        <img
-          src={MoodIcon2}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 13",
-    },
-    {
-      height: "h-26",
-      color: "bg-red-400",
-      emoji: (
-        <img
-          src={MoodIcon}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 14",
-    },
-    {
-      height: "h-68",
-      color: "bg-orange-400",
-      emoji: (
-        <img
-          src={MoodIcon4}
-          alt="Mood Icon"
-          style={{ width: "1.5em", height: "1.5em" }}
-        />
-      ),
-      date: "April 15",
-    },
-  ];
+  const processedChartBars = chartBars.map((bar) => ({
+    ...bar,
+    color: moodColors[bar.mood],
+    emoji: (
+      <img
+        src={moodIcons[bar.mood]}
+        alt="Mood Icon"
+        style={{ width: "1.5em", height: "1.5em" }}
+      />
+    ),
+  }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
-        <header className="flex justify-between items-center mb-16">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-xl">
-              <img src={Logo} alt="Logo" className="w-8 h-8" />
-            </div>
-            <span className="text-lg font-semibold text-gray-900">
-              Mood tracker
-            </span>
-          </div>
-          <div className="flex items-center gap-2 cursor-pointer">
-            <div className="w-9 h-9 rounded-full bg-gray-300">
-              <img src={avatar} alt="avatar" />
-            </div>
-            <span className="text-gray-500 text-sm">▼</span>
-            {onBack && (
-              <button
-                className="ml-8 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
-                onClick={onBack}
-              >
-                Back
-              </button>
-            )}
-          </div>
-        </header>
+    <PageLayout>
+      <main className="text-center mb-16">
+        <h1 className="text-4xl text-indigo-600 mb-4 font-normal">
+          Hello, Lisa!
+        </h1>
+        <h2 className="text-5xl font-bold text-gray-900 mb-4 leading-tight">
+          How are you feeling today?
+        </h2>
+        <p className="text-gray-600 mb-10">Wednesday, April 16th, 2025</p>
+        {onBack && (
+          <button
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+            onClick={onBack}
+          >
+            Back
+          </button>
+        )}
+      </main>
 
-        <main className="text-center mb-16">
-          <h1 className="text-4xl text-indigo-600 mb-4 font-normal">
-            Hello, Lisa!
-          </h1>
-          <h2 className="text-5xl font-bold text-gray-900 mb-4 leading-tight">
-            How are you feeling today?
-          </h2>
-          <p className="text-gray-600 mb-10">Wednesday, April 16th, 2025</p>
-        </main>
+      {/* Main Container with 32px gap */}
+      <div className="flex gap-8 mb-8">
+        {/* Current Mood Section */}
+        <div className="p-8 bg-white/70 backdrop-blur-sm border-0 shadow-lg rounded-lg w-[670px] h-[340px]">
+          <div className="flex items-center justify-between h-full">
+            <div className="flex-1 pr-12">
+              <p className="text-gray-500 text-xl mb-2">{"I'm feeling"}</p>
+              <h4 className="text-5xl font-bold text-gray-800 mb-12">
+                Very Happy
+              </h4>
 
-        {/* Main Container with 32px gap */}
-        <div className="flex gap-8 mb-8">
-          {/* Current Mood Section */}
-          <div className="p-8 bg-white/70 backdrop-blur-sm border-0 shadow-lg rounded-lg w-[670px] h-[340px]">
-            <div className="flex items-center justify-between h-full">
-              <div className="flex-1 pr-12">
-                <p className="text-gray-500 text-xl mb-2">{"I'm feeling"}</p>
-                <h4 className="text-5xl font-bold text-gray-800 mb-12">
-                  Very Happy
-                </h4>
-
-                <div className="flex items-start gap-4">
-                  <div className="text-blue-500 text-5xl font-bold leading-none mt-1">
-                    "
-                  </div>
-                  <p className="text-gray-700 italic text-xl leading-relaxed pt-2">
-                    When your heart is full, share your light with the world.
-                  </p>
+              <div className="flex items-start gap-4">
+                <div className="text-blue-500 text-5xl font-bold leading-none mt-1">
+                  "
                 </div>
-              </div>
-
-              <div className="flex-shrink-0">
-                <div className="w-48 h-48 flex items-center justify-center">
-                  <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Feeling%20Icon%20Container-bD3Ohd1Skd6lWdei6coeEdOnREsZnK.png"
-                    alt="Very Happy Emoji"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                      e.target.nextSibling.style.display = "block";
-                    }}
-                  />
-                  <div
-                    className="w-48 h-48 bg-yellow-300 rounded-full flex items-center justify-center text-8xl"
-                    style={{ display: "none" }}
-                  >
-                    😊
-                  </div>
-                </div>
+                <p className="text-gray-700 italic text-xl leading-relaxed pt-2">
+                  When your heart is full, share your light with the world.
+                </p>
               </div>
             </div>
-          </div>
 
-          {/* Sleep & Reflection with 20px gap */}
-          <div className="w-[568px] flex flex-col gap-5">
-            {/* Sleep Section */}
-            <div className="p-6 bg-white border-0 shadow-lg rounded-lg h-[160px]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="text-gray-600">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3 12h3l3-9 6 18 3-9h3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+            <div className="flex-shrink-0">
+              <div className="w-48 h-48 flex items-center justify-center">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Feeling%20Icon%20Container-bD3Ohd1Skd6lWdei6coeEdOnREsZnK.png"
+                  alt="Very Happy Emoji"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.nextSibling.style.display = "block";
+                  }}
+                />
+                <div
+                  className="w-48 h-48 bg-yellow-300 rounded-full flex items-center justify-center text-8xl"
+                  style={{ display: "none" }}
+                >
+                  😊
                 </div>
-                <span className="text-gray-600 font-medium">Sleep</span>
-              </div>
-              <p className="text-4xl font-bold text-gray-800">9+ hours</p>
-            </div>
-
-            {/* Reflection Section */}
-            <div className="p-6 bg-white border-0 shadow-lg rounded-lg h-[160px]">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="text-gray-600">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423L16.5 15.75l.394 1.183a2.25 2.25 0 001.423 1.423L19.5 18.75l-1.183.394a2.25 2.25 0 00-1.423 1.423z"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <span className="text-gray-600 font-medium">
-                  Reflection of the day
-                </span>
-              </div>
-              <p className="text-gray-800 text-lg mb-4 leading-relaxed">
-                Woke up early and finally tackled a big project!
-              </p>
-              <div className="space-x-3">
-                <span className="text-gray-500 italic">#Grateful</span>
-                <span className="text-gray-500 italic">#Optimistic</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="bg-white rounded-2xl p-4 shadow-sm flex flex-col gap-6 pt-6">
-            {statsCards.map((card, idx) => (
-              <div key={idx}>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900 pb-2">
-                    {card.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 ml-3">{card.subtitle}</p>
-                </div>
-                {card.content}
+        {/* Sleep & Reflection with 20px gap */}
+        <div className="w-[568px] flex flex-col gap-5">
+          {/* Sleep Section */}
+          <div className="p-6 bg-white border-0 shadow-lg rounded-lg h-[160px]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-gray-600">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12h3l3-9 6 18 3-9h3"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
-            ))}
+              <span className="text-gray-600 font-medium">Sleep</span>
+            </div>
+            <p className="text-4xl font-bold text-gray-800">9+ hours</p>
           </div>
 
-          <div className="lg:col-span-2 bg-white rounded-2xl p-8 shadow-sm">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">
-              Mood and sleep trends
-            </h3>
-
-            <div className="relative">
-              <div className="absolute left-0 top-0 h-80 flex flex-col justify-between text-sm text-gray-600 -ml-2">
-                <div className="flex items-center gap-2 h-4">
-                  <span>💤</span>
-                  <span>9+ hours</span>
-                </div>
-                <div className="flex items-center gap-2 h-4">
-                  <span>💤</span>
-                  <span>7-8 hours</span>
-                </div>
-                <div className="flex items-center gap-2 h-4">
-                  <span>💤</span>
-                  <span>5-6 hours</span>
-                </div>
-                <div className="flex items-center gap-2 h-4">
-                  <span>💤</span>
-                  <span>3-4 hours</span>
-                </div>
-                <div className="flex items-center gap-2 h-4">
-                  <span>💤</span>
-                  <span>0-2 hours</span>
-                </div>
+          {/* Reflection Section */}
+          <div className="p-6 bg-white border-0 shadow-lg rounded-lg h-[160px]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-gray-600">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423L16.5 15.75l.394 1.183a2.25 2.25 0 001.423 1.423L19.5 18.75l-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
-
-              <div className="ml-24 h-80 flex items-end justify-between gap-2">
-                {chartBars.map((bar, idx) => (
-                  <ChartBar key={idx} {...bar} />
-                ))}
-              </div>
+              <span className="text-gray-600 font-medium">
+                Reflection of the day
+              </span>
+            </div>
+            <p className="text-gray-800 text-lg mb-4 leading-relaxed">
+              Woke up early and finally tackled a big project!
+            </p>
+            <div className="space-x-3">
+              <span className="text-gray-500 italic">#Grateful</span>
+              <span className="text-gray-500 italic">#Optimistic</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="bg-white rounded-2xl p-4 shadow-sm flex flex-col gap-6 pt-6">
+          <StatsCard title="Average Mood" subtitle="(Last 5 check-ins)">
+            <div className="bg-[#89CAFF] text-white p-4 rounded-2xl relative overflow-hidden pt-9">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-y-4 translate-x-4"></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                    <img {...createMoodIcon(3)} />
+                  </div>
+                  <span className="text-2xl font-bold text-gray-800">
+                    Neutral
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700 pb-4">
+                  <span className="text-lg">→</span>
+                  <span className="text-sm font-medium">
+                    Same as the previous 5 check-ins
+                  </span>
+                </div>
+              </div>
+            </div>
+          </StatsCard>
+
+          <StatsCard title="Average Sleep" subtitle="(Last 5 check-ins)">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white p-5 rounded-xl pt-9">
+              <div className="text-2xl font-bold mb-2 flex items-center gap-2">
+                💤 5-6 Hours
+              </div>
+              <div className="text-sm opacity-90 flex items-center gap-1 pb-3">
+                ↗ Increase from the previous 5 <br /> check-ins
+              </div>
+            </div>
+          </StatsCard>
+        </div>
+
+        <div className="lg:col-span-2 bg-white rounded-2xl p-8 shadow-sm">
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">
+            Mood and sleep trends
+          </h3>
+
+          <div className="relative">
+            <div className="absolute left-0 top-0 h-80 flex flex-col justify-between text-sm text-gray-600 -ml-2">
+              <div className="flex items-center gap-2 h-4">
+                <span>💤</span>
+                <span>9+ hours</span>
+              </div>
+              <div className="flex items-center gap-2 h-4">
+                <span>💤</span>
+                <span>7-8 hours</span>
+              </div>
+              <div className="flex items-center gap-2 h-4">
+                <span>💤</span>
+                <span>5-6 hours</span>
+              </div>
+              <div className="flex items-center gap-2 h-4">
+                <span>💤</span>
+                <span>3-4 hours</span>
+              </div>
+              <div className="flex items-center gap-2 h-4">
+                <span>💤</span>
+                <span>0-2 hours</span>
+              </div>
+            </div>
+
+            <div className="ml-24 h-80 flex items-end justify-between gap-2">
+              {processedChartBars.map((bar, idx) => (
+                <ChartBar key={idx} {...bar} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
   );
 }

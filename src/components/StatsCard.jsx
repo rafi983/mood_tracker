@@ -1,12 +1,26 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-export default function StatsCard({ title, subtitle, content, date }) {
+export default function StatsCard({
+  title,
+  subtitle,
+  children,
+  className = "",
+}) {
   return (
-    <div className="mb-6">
-      <div className="font-semibold text-lg mb-1">{title}</div>
-      <div className="text-xs text-gray-500 mb-2">{subtitle}</div>
-      {content}
-      {date && <div className="text-xs text-gray-400 mt-2">{date}</div>}
+    <div className={`${className}`}>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-lg font-semibold text-gray-900 pb-2">{title}</h3>
+        <p className="text-sm text-gray-500 ml-3">{subtitle}</p>
+      </div>
+      {children}
     </div>
   );
 }
+
+StatsCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string,
+};
