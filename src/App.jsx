@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Insights from "./components/Insights";
-import MoodTracker from "./components/MoodTracker";
+import MoodLogger from "./components/MoodLogger";
 
 function App() {
   const [showInsights, setShowInsights] = useState(false);
-  const [showMoodTracker, setShowMoodTracker] = useState(false);
+  const [showMoodLogger, setShowMoodLogger] = useState(false);
 
-  const handleMoodTrackerComplete = () => {
-    setShowMoodTracker(false);
+  const handleMoodLoggerComplete = () => {
+    setShowMoodLogger(false);
     setShowInsights(true);
   };
 
@@ -17,13 +17,13 @@ function App() {
       {showInsights ? (
         <Insights onBack={() => setShowInsights(false)} />
       ) : (
-        <Dashboard onLogMoodClick={() => setShowMoodTracker(true)} />
+        <Dashboard onLogMoodClick={() => setShowMoodLogger(true)} />
       )}
 
-      {showMoodTracker && (
-        <MoodTracker
-          onClose={() => setShowMoodTracker(false)}
-          onComplete={handleMoodTrackerComplete}
+      {showMoodLogger && (
+        <MoodLogger
+          onClose={() => setShowMoodLogger(false)}
+          onComplete={handleMoodLoggerComplete}
         />
       )}
     </>

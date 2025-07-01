@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
-// Import all mood components
-import Mood1 from "../mood/Mood1";
-import Mood2 from "../mood/Mood2";
-import Mood3 from "../mood/Mood3";
-import Mood4 from "../mood/Mood4";
-
-const MoodTracker = ({ onClose }) => {
+const MoodLogger = ({ onClose, onComplete }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [moodData, setMoodData] = useState({
     basicMood: "",
@@ -43,7 +37,13 @@ const MoodTracker = ({ onClose }) => {
     console.log("Final mood data:", moodData);
     // Handle final submission logic here
     // You can send data to API, store in local storage, etc.
-    onClose?.();
+
+    // Redirect to insights page for demo
+    if (onComplete) {
+      onComplete();
+    } else {
+      onClose?.();
+    }
   };
 
   const renderCurrentStep = () => {
@@ -60,25 +60,25 @@ const MoodTracker = ({ onClose }) => {
       case 1:
         return (
           <StepWrapper step={1} {...commonProps}>
-            <Mood1Content {...commonProps} />
+            <BasicMoodSelectorContent {...commonProps} />
           </StepWrapper>
         );
       case 2:
         return (
           <StepWrapper step={2} {...commonProps}>
-            <Mood2Content {...commonProps} />
+            <DetailedFeelingsSelectorContent {...commonProps} />
           </StepWrapper>
         );
       case 3:
         return (
           <StepWrapper step={3} {...commonProps}>
-            <Mood3Content {...commonProps} />
+            <JournalEntryContent {...commonProps} />
           </StepWrapper>
         );
       case 4:
         return (
           <StepWrapper step={4} {...commonProps}>
-            <Mood4Content {...commonProps} />
+            <SleepTrackerContent {...commonProps} />
           </StepWrapper>
         );
       default:
@@ -147,7 +147,7 @@ const StepWrapper = ({ step, totalSteps, onClose, children }) => {
 };
 
 // Individual step content components
-const Mood1Content = ({ onNext, moodData }) => {
+const BasicMoodSelectorContent = ({ onNext, moodData }) => {
   const [selectedMood, setSelectedMood] = useState(
     moodData.basicMood || "Very Happy",
   );
@@ -221,7 +221,7 @@ const Mood1Content = ({ onNext, moodData }) => {
   );
 };
 
-const Mood2Content = ({ onNext, onPrevious, moodData }) => {
+const DetailedFeelingsSelectorContent = ({ onNext, onPrevious, moodData }) => {
   const [selectedMoods, setSelectedMoods] = useState(
     moodData.detailedMoods || [],
   );
@@ -323,7 +323,7 @@ const Mood2Content = ({ onNext, onPrevious, moodData }) => {
   );
 };
 
-const Mood3Content = ({ onNext, onPrevious, moodData }) => {
+const JournalEntryContent = ({ onNext, onPrevious, moodData }) => {
   const [journalText, setJournalText] = useState(moodData.journalEntry || "");
   const maxLength = 150;
 
@@ -379,7 +379,7 @@ const Mood3Content = ({ onNext, onPrevious, moodData }) => {
   );
 };
 
-const Mood4Content = ({ onNext, onPrevious, moodData }) => {
+const SleepTrackerContent = ({ onNext, onPrevious, moodData }) => {
   const [selectedSleep, setSelectedSleep] = useState(moodData.sleepHours || "");
 
   const sleepOptions = [
@@ -456,4 +456,4 @@ const Mood4Content = ({ onNext, onPrevious, moodData }) => {
   );
 };
 
-export default MoodTracker;
+export default MoodLogger;
