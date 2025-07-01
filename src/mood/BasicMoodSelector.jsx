@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import veryHappyIcon from "../assets/images/icon-very-happy-color.svg";
-import happyIcon from "../assets/images/icon-happy-color.svg";
-import neutralIcon from "../assets/images/icon-neutral-color.svg";
-import sadIcon from "../assets/images/icon-sad-color.svg";
-import verySadIcon from "../assets/images/icon-very-sad-color.svg";
+import veryHappyIcon from "../assets/icon-very-happy-color.svg";
+import happyIcon from "../assets/icon-happy-color.svg";
+import neutralIcon from "../assets/icon-neutral-color.svg";
+import sadIcon from "../assets/icon-sad-color.svg";
+import verySadIcon from "../assets/icon-very-sad-color.svg";
 
 export default function BasicMoodSelector({ moodData, onNext }) {
   const [selectedMood, setSelectedMood] = useState(

@@ -1,35 +1,86 @@
-import React from "react";
+import React, { useState } from "react";
 import PageLayout from "./PageLayout";
 import StatsCard from "./StatsCard";
 import ChartBar from "./ChartBar";
+import MoodDetailModal from "./MoodDetailModal";
 import { createMoodIcon, moodColors, moodIcons } from "../utils/moodUtils";
+import dataService from "../services/dataService";
+import quoteIcon from "../assets/images/icon-quote.svg";
+import sleepIcon from "../assets/images/icon-sleep.svg";
 
-export default function Dashboard({ onLogMoodClick }) {
-  const chartBars = [
-    { height: "h-32 max-sm:h-20", mood: 5, date: "March 31" },
-    { height: "h-48 max-sm:h-32", mood: 2, date: "April 02" },
-    { height: "h-24 max-sm:h-16", mood: 1, date: "April 04" },
-    { height: "h-36 max-sm:h-24", mood: 3, date: "April 06" },
-    { height: "h-52 max-sm:h-36", mood: 2, date: "April 07" },
-    { height: "h-64 max-sm:h-44", mood: 4, date: "April 09" },
-    { height: "h-28 max-sm:h-20", mood: 5, date: "April 10" },
-    { height: "h-44 max-sm:h-28", mood: 3, date: "April 12" },
-    { height: "h-56 max-sm:h-40", mood: 2, date: "April 13" },
-    { height: "h-26 max-sm:h-16", mood: 1, date: "April 14" },
-    { height: "h-68 max-sm:h-48", mood: 4, date: "April 15" },
-  ];
+export default function Dashboard({
+  onLogMoodClick,
+  onViewInsights,
+  todaysEntry,
+}) {
+  const [selectedEntry, setSelectedEntry] = useState(null);
 
-  const processedChartBars = chartBars.map((bar) => ({
-    ...bar,
-    color: moodColors[bar.mood],
-    emoji: (
-      <img
-        src={moodIcons[bar.mood]}
-        alt="Mood Icon"
-        style={{ width: "1.5em", height: "1.5em" }}
-      />
-    ),
-  }));
+  // Get real data from service
+  const recentEntries = dataService.getRecentEntries(11);
+  const comparison = dataService.getComparison(5);
+
+  // Convert data entries to chart format
+  const processedChartBars = recentEntries.map((entry, index) => {
+    const date = new Date(entry.createdAt);
+    // Use predefined Tailwind height classes based on mood
+    const getHeightClass = (mood) => {
+      switch (mood) {
+        case -2:
+          return "h-16"; // Very Sad - 64px
+        case -1:
+          return "h-24"; // Sad - 96px
+        case 0:
+          return "h-32"; // Neutral - 128px
+        case 1:
+          return "h-40"; // Happy - 160px
+        case 2:
+          return "h-48"; // Very Happy - 192px
+        default:
+          return "h-32";
+      }
+    };
+
+    return {
+      height: getHeightClass(entry.mood),
+      mood: entry.mood + 3, // Convert -2 to 2 range to 1 to 5 for moodIcons
+      date: date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+      entry: entry,
+      color: moodColors[entry.mood + 3],
+      emoji: (
+        <img
+          src={moodIcons[entry.mood + 3]}
+          alt="Mood Icon"
+          style={{ width: "1.5em", height: "1.5em" }}
+        />
+      ),
+    };
+  });
+
+  // Get trend icons
+  const getTrendIcon = (comparison) => {
+    switch (comparison) {
+      case "increase":
+        return "↗";
+      case "decrease":
+        return "↘";
+      default:
+        return "→";
+    }
+  };
+
+  const getTrendText = (comparison, type) => {
+    switch (comparison) {
+      case "increase":
+        return `Increase from the previous 5 check-ins`;
+      case "decrease":
+        return `Decrease from the previous 5 check-ins`;
+      default:
+        return `Same as the previous 5 check-ins`;
+    }
+  };
 
   return (
     <PageLayout>
@@ -58,16 +109,24 @@ export default function Dashboard({ onLogMoodClick }) {
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                    <img {...createMoodIcon(3)} />
+                    <img
+                      {...createMoodIcon(
+                        Math.round(comparison.current.mood) + 3,
+                      )}
+                    />
                   </div>
                   <span className="text-2xl font-bold text-gray-800">
-                    Neutral
+                    {dataService.getMoodLabel(
+                      Math.round(comparison.current.mood),
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700 pb-4">
-                  <span className="text-lg">→</span>
+                  <span className="text-lg">
+                    {getTrendIcon(comparison.moodComparison)}
+                  </span>
                   <span className="text-sm font-medium">
-                    Same as the previous 5 check-ins
+                    {getTrendText(comparison.moodComparison)}
                   </span>
                 </div>
               </div>
@@ -77,10 +136,19 @@ export default function Dashboard({ onLogMoodClick }) {
           <StatsCard title="Average Sleep" subtitle="(Last 5 check-ins)">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white p-5 rounded-xl pt-9">
               <div className="text-2xl font-bold mb-2 flex items-center gap-2">
-                💤 5-6 Hours
+                💤 {comparison.current.sleep.toFixed(1)} Hours
               </div>
               <div className="text-sm opacity-90 flex items-center gap-1 pb-3">
-                ↗ Increase from the previous 5 <br /> check-ins
+                {getTrendIcon(comparison.sleepComparison)}{" "}
+                {getTrendText(comparison.sleepComparison)
+                  .split(" ")
+                  .slice(0, 3)
+                  .join(" ")}
+                <br />
+                {getTrendText(comparison.sleepComparison)
+                  .split(" ")
+                  .slice(3)
+                  .join(" ")}
               </div>
             </div>
           </StatsCard>
@@ -122,12 +190,24 @@ export default function Dashboard({ onLogMoodClick }) {
 
             <div className="ml-24 max-sm:ml-12 h-80 max-sm:h-60 flex items-end justify-between gap-2 max-sm:overflow-x-auto">
               {processedChartBars.map((bar, idx) => (
-                <ChartBar key={idx} {...bar} />
+                <ChartBar
+                  key={idx}
+                  {...bar}
+                  onClick={(entry) => setSelectedEntry(entry)}
+                />
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {selectedEntry && (
+        <MoodDetailModal
+          entry={selectedEntry}
+          onClose={() => setSelectedEntry(null)}
+        />
+      )}
     </PageLayout>
   );
 }

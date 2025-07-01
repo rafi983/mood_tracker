@@ -4,6 +4,7 @@ import BasicMoodSelector from "../mood/BasicMoodSelector";
 import DetailedFeelingsSelector from "../mood/DetailedFeelingsSelector";
 import JournalEntry from "../mood/JournalEntry";
 import SleepTracker from "../mood/SleepTracker";
+import dataService from "../services/dataService";
 
 const MoodLogger = ({ onClose, onComplete }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -36,10 +37,27 @@ const MoodLogger = ({ onClose, onComplete }) => {
   };
 
   const handleSubmit = () => {
-    console.log("Final mood data:", moodData);
+    // Convert mood label to number for storage
+    const moodMapping = {
+      "Very Happy": 2,
+      Happy: 1,
+      Neutral: 0,
+      Sad: -1,
+      "Very Sad": -2,
+    };
+
+    const entryData = {
+      mood: moodMapping[moodData.basicMood] || 0,
+      feelings: moodData.detailedMoods,
+      journalEntry: moodData.journalEntry,
+      sleepHours: parseFloat(moodData.sleepHours) || 0,
+    };
+
+    const savedEntry = dataService.addMoodEntry(entryData);
+    console.log("Mood entry saved:", savedEntry);
 
     if (onComplete) {
-      onComplete();
+      onComplete(savedEntry);
     } else {
       onClose?.();
     }
