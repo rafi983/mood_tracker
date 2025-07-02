@@ -6,23 +6,27 @@ export default function ChartBar({
   color,
   emoji,
   date,
-  entry,
-  onClick,
+  fullEntry,
+  onBarClick,
 }) {
   const [month, day] = date.split(" ");
 
   const handleClick = () => {
-    if (onClick && entry) {
-      onClick(entry);
+    console.log("ChartBar clicked, fullEntry:", fullEntry); // Debug log
+    if (onBarClick) {
+      onBarClick(fullEntry);
     }
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative">
+    <button
+      type="button"
+      onClick={handleClick}
+      className="flex flex-col items-center h-full group focus:outline-none"
+    >
+      <div className="relative w-full h-full flex items-end justify-center">
         <div
-          className={`w-12 max-sm:w-8 ${height} ${color} rounded-full relative cursor-pointer hover:opacity-80 transition-opacity`}
-          onClick={handleClick}
+          className={`w-12 max-sm:w-8 ${height} ${color} rounded-full relative transition-transform group-hover:scale-110`}
         >
           <div className="absolute -top-5 max-sm:-top-4 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-10 h-10 max-sm:w-8 max-sm:h-8 bg-white rounded-full flex items-center justify-center text-lg max-sm:text-sm shadow-sm border border-gray-100">
             {emoji}
@@ -35,7 +39,7 @@ export default function ChartBar({
         </div>
         <div className="text-xs text-gray-500">{day}</div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -44,6 +48,4 @@ ChartBar.propTypes = {
   color: PropTypes.string.isRequired,
   emoji: PropTypes.node.isRequired,
   date: PropTypes.string.isRequired,
-  entry: PropTypes.object,
-  onClick: PropTypes.func,
 };

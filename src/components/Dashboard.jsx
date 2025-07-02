@@ -3,84 +3,63 @@ import PageLayout from "./PageLayout";
 import StatsCard from "./StatsCard";
 import ChartBar from "./ChartBar";
 import MoodDetailModal from "./MoodDetailModal";
-import { createMoodIcon, moodColors, moodIcons } from "../utils/moodUtils";
-import dataService from "../services/dataService";
-import quoteIcon from "../assets/images/icon-quote.svg";
-import sleepIcon from "../assets/images/icon-sleep.svg";
+import { moodConfig } from "../utils/moodUtils";
+import { formatDate } from "../utils/moodUtils";
+
+function getBarHeight(sleepHours) {
+  const mapping = {
+    "9+ hours": "h-68 max-sm:h-52",
+    "7-8 hours": "h-52 max-sm:h-38",
+    "5-6 hours": "h-32 max-sm:h-25",
+    "3-4 hours": "h-20 max-sm:h-13",
+    "0-2 hours": "h-16 max-sm:h-16",
+  };
+  return mapping[sleepHours] || "h-20 max-sm:h-12";
+}
 
 export default function Dashboard({
   onLogMoodClick,
-  onViewInsights,
-  todaysEntry,
+  onBarClick,
+  moodEntries,
+  averages,
 }) {
   const [selectedEntry, setSelectedEntry] = useState(null);
 
-  // Get real data from service
-  const recentEntries = dataService.getRecentEntries(11);
-  const comparison = dataService.getComparison(5);
+  const handleBarClick = (entry) => {
+    setSelectedEntry(entry);
+    // Don't call onBarClick to prevent navigation to Insights
+  };
 
-  // Convert data entries to chart format
-  const processedChartBars = recentEntries.map((entry, index) => {
-    const date = new Date(entry.createdAt);
-    // Use predefined Tailwind height classes based on mood
-    const getHeightClass = (mood) => {
-      switch (mood) {
-        case -2:
-          return "h-16"; // Very Sad - 64px
-        case -1:
-          return "h-24"; // Sad - 96px
-        case 0:
-          return "h-32"; // Neutral - 128px
-        case 1:
-          return "h-40"; // Happy - 160px
-        case 2:
-          return "h-48"; // Very Happy - 192px
-        default:
-          return "h-32";
-      }
-    };
+  const closeModal = () => {
+    setSelectedEntry(null);
+  };
 
+  const recentEntries = moodEntries.slice(-11);
+
+  const processedChartBars = recentEntries.map((entry) => {
+    const config = moodConfig[entry.mood] || moodConfig["0"];
     return {
-      height: getHeightClass(entry.mood),
-      mood: entry.mood + 3, // Convert -2 to 2 range to 1 to 5 for moodIcons
-      date: date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      entry: entry,
-      color: moodColors[entry.mood + 3],
+      height: getBarHeight(entry.sleepHours),
+      color: config.color,
       emoji: (
         <img
-          src={moodIcons[entry.mood + 3]}
-          alt="Mood Icon"
+          src={config.Icon}
+          alt={config.label}
           style={{ width: "1.5em", height: "1.5em" }}
         />
       ),
+      date: formatDate(entry.createdAt),
+      fullEntry: entry,
     };
   });
 
-  // Get trend icons
-  const getTrendIcon = (comparison) => {
-    switch (comparison) {
-      case "increase":
-        return "↗";
-      case "decrease":
-        return "↘";
-      default:
-        return "→";
-    }
-  };
-
-  const getTrendText = (comparison, type) => {
-    switch (comparison) {
-      case "increase":
-        return `Increase from the previous 5 check-ins`;
-      case "decrease":
-        return `Decrease from the previous 5 check-ins`;
-      default:
-        return `Same as the previous 5 check-ins`;
-    }
-  };
+  const today = new Date();
+  const todayFormatted = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <PageLayout>
@@ -91,7 +70,7 @@ export default function Dashboard({
         <h2 className="text-5xl font-bold text-gray-900 mb-4 leading-tight">
           How are you feeling today?
         </h2>
-        <p className="text-gray-600 mb-10">Wednesday, April 16th, 2025</p>
+        <p className="text-gray-600 mb-10">{todayFormatted}</p>
         <button
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold transition-colors"
           onClick={onLogMoodClick}
@@ -99,7 +78,6 @@ export default function Dashboard({
           Log today's mood
         </button>
       </main>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="bg-white rounded-2xl p-4 shadow-sm flex flex-col gap-6 pt-6">
           <StatsCard title="Average Mood" subtitle="(Last 5 check-ins)">
@@ -110,23 +88,19 @@ export default function Dashboard({
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                     <img
-                      {...createMoodIcon(
-                        Math.round(comparison.current.mood) + 3,
-                      )}
+                      src={averages.mood.Icon}
+                      className="w-6 h-6"
+                      alt="average mood"
                     />
                   </div>
                   <span className="text-2xl font-bold text-gray-800">
-                    {dataService.getMoodLabel(
-                      Math.round(comparison.current.mood),
-                    )}
+                    {averages.mood.label}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700 pb-4">
-                  <span className="text-lg">
-                    {getTrendIcon(comparison.moodComparison)}
-                  </span>
+                  <span className="text-lg"></span>
                   <span className="text-sm font-medium">
-                    {getTrendText(comparison.moodComparison)}
+                    {averages.mood.comparison}
                   </span>
                 </div>
               </div>
@@ -136,19 +110,11 @@ export default function Dashboard({
           <StatsCard title="Average Sleep" subtitle="(Last 5 check-ins)">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white p-5 rounded-xl pt-9">
               <div className="text-2xl font-bold mb-2 flex items-center gap-2">
-                💤 {comparison.current.sleep.toFixed(1)} Hours
+                💤 {averages.sleep.range}
               </div>
               <div className="text-sm opacity-90 flex items-center gap-1 pb-3">
-                {getTrendIcon(comparison.sleepComparison)}{" "}
-                {getTrendText(comparison.sleepComparison)
-                  .split(" ")
-                  .slice(0, 3)
-                  .join(" ")}
-                <br />
-                {getTrendText(comparison.sleepComparison)
-                  .split(" ")
-                  .slice(3)
-                  .join(" ")}
+                {averages.sleep.comparisonLine1} <br />{" "}
+                {averages.sleep.comparisonLine2}
               </div>
             </div>
           </StatsCard>
@@ -189,24 +155,20 @@ export default function Dashboard({
             </div>
 
             <div className="ml-24 max-sm:ml-12 h-80 max-sm:h-60 flex items-end justify-between gap-2 max-sm:overflow-x-auto">
-              {processedChartBars.map((bar, idx) => (
+              {processedChartBars.map((bar) => (
                 <ChartBar
-                  key={idx}
+                  key={bar.fullEntry.id || `entry-${bar.date}`}
                   {...bar}
-                  onClick={(entry) => setSelectedEntry(entry)}
+                  onBarClick={() => handleBarClick(bar.fullEntry)}
                 />
               ))}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Modal */}
+      {/* Mood Detail Modal */}
       {selectedEntry && (
-        <MoodDetailModal
-          entry={selectedEntry}
-          onClose={() => setSelectedEntry(null)}
-        />
+        <MoodDetailModal entry={selectedEntry} onClose={closeModal} />
       )}
     </PageLayout>
   );

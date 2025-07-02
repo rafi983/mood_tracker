@@ -16,7 +16,7 @@ export default function MoodDetailModal({ entry, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center p-4 z-50"
+      className="fixed inset-0 flex items-center justify-center p-4 z-[9999]"
       style={{ backgroundColor: "rgba(87, 87, 123, 0.3)" }}
       onClick={onClose}
     >
@@ -43,7 +43,7 @@ export default function MoodDetailModal({ entry, onClose }) {
           <h3 className="text-sm font-medium text-gray-600 mb-3">Mood</h3>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <img {...createMoodIcon(entry.mood + 3)} />
+              <img {...createMoodIcon(entry.mood)} />
             </div>
             <span className="text-lg font-semibold text-gray-800">
               {dataService.getMoodLabel(entry.mood)}
@@ -55,14 +55,15 @@ export default function MoodDetailModal({ entry, onClose }) {
         <div className="mb-6">
           <h3 className="text-sm font-medium text-gray-600 mb-3">Feelings</h3>
           <div className="flex flex-wrap gap-2">
-            {entry.feelings.map((feeling, index) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-              >
-                {feeling}
-              </span>
-            ))}
+            {entry.feelings &&
+              entry.feelings.map((feeling, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                >
+                  {feeling}
+                </span>
+              ))}
           </div>
         </div>
 

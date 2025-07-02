@@ -3,78 +3,67 @@ import PageLayout from "./PageLayout";
 import StatsCard from "./StatsCard";
 import ChartBar from "./ChartBar";
 import MoodDetailModal from "./MoodDetailModal";
-import { createMoodIcon, moodColors, moodIcons } from "../utils/moodUtils";
-import dataService from "../services/dataService";
-import sleepIcon from "../assets/images/icon-sleep.svg";
+import { moodConfig, formatDate } from "../utils/moodUtils";
 
-export default function Insights({ onBack }) {
+function getBarHeight(sleepHours) {
+  const mapping = {
+    "9+ hours": "h-68 max-sm:h-52",
+    "7-8 hours": "h-52 max-sm:h-38",
+    "5-6 hours": "h-32 max-sm:h-25",
+    "3-4 hours": "h-20 max-sm:h-13",
+    "0-2 hours": "h-16 max-sm:h-16",
+  };
+  return mapping[sleepHours] || "h-20 max-sm:h-12";
+}
+
+export default function Insights({
+  entry,
+  onBack,
+  moodQuotes,
+  averages,
+  moodEntries,
+  onBarClick,
+}) {
+  const [showFullQuote, setShowFullQuote] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
+  const { mood, feelings, journalEntry, sleepHours, createdAt } = entry;
+  const config = moodConfig[mood] || moodConfig["0"];
+  const quote = moodQuotes[mood] || "Keep going, you're doing great!";
 
-  // Get real data from service for the chart
-  const recentEntries = dataService.getRecentEntries(11);
-  const comparison = dataService.getComparison(5);
-
-  // Convert data entries to chart format
+  const recentEntries = moodEntries.slice(-11);
   const processedChartBars = recentEntries.map((entry) => {
-    const date = new Date(entry.createdAt);
-    // Use predefined Tailwind height classes based on mood
-    const getHeightClass = (mood) => {
-      switch (mood) {
-        case -2:
-          return "h-16"; // Very Sad - 64px
-        case -1:
-          return "h-24"; // Sad - 96px
-        case 0:
-          return "h-32"; // Neutral - 128px
-        case 1:
-          return "h-40"; // Happy - 160px
-        case 2:
-          return "h-48"; // Very Happy - 192px
-        default:
-          return "h-32";
-      }
-    };
-
+    const config = moodConfig[entry.mood] || moodConfig["0"];
     return {
-      height: getHeightClass(entry.mood),
-      mood: entry.mood + 3,
-      date: date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      entry: entry,
-      color: moodColors[entry.mood + 3],
+      height: getBarHeight(entry.sleepHours),
+      color: config.color,
       emoji: (
         <img
-          src={moodIcons[entry.mood + 3]}
-          alt="Mood Icon"
+          src={config.Icon}
+          alt={config.label}
           style={{ width: "1.5em", height: "1.5em" }}
         />
       ),
+      date: formatDate(entry.createdAt),
+      fullEntry: entry,
     };
   });
 
-  // Get trend icons
-  const getTrendIcon = (comparison) => {
-    switch (comparison) {
-      case "increase":
-        return "↗";
-      case "decrease":
-        return "↘";
-      default:
-        return "→";
-    }
+  const today = new Date();
+  const todayFormatted = today.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const handleBarClick = (entry) => {
+    console.log("Insights bar clicked, entry:", entry); // Debug log
+    setSelectedEntry(entry);
   };
 
-  const getTrendText = (comparison) => {
-    switch (comparison) {
-      case "increase":
-        return "Increase from the previous 5 check-ins";
-      case "decrease":
-        return "Decrease from the previous 5 check-ins";
-      default:
-        return "Same as the previous 5 check-ins";
-    }
+  const closeModal = () => {
+    console.log("Closing modal from Insights"); // Debug log
+    setSelectedEntry(null);
   };
 
   return (
@@ -86,49 +75,46 @@ export default function Insights({ onBack }) {
         <h2 className="text-5xl font-bold text-gray-900 mb-4 leading-tight">
           How are you feeling today?
         </h2>
-        <p className="text-gray-600 mb-10">Wednesday, April 16th, 2025</p>
+        <p className="text-gray-600 mb-10">{todayFormatted}</p>
       </main>
 
-      {/* Main Container with 32px gap */}
       <div className="flex max-lg:flex-col gap-8 max-lg:gap-6 mb-8">
         {/* Current Mood Section */}
-        <div className="p-6 max-sm:p-4 bg-white/70 backdrop-blur-sm border-0 shadow-lg rounded-lg flex-1 lg:w-[670px] lg:h-[340px] max-lg:min-h-[280px]">
+        <div className="p-6 max-sm:p-4 bg-white/70 backdrop-blur-sm border-0 shadow-lg rounded-lg flex-1 lg:w-[670px] lg:min-h-[340px]">
           <div className="flex max-sm:flex-col items-center max-sm:items-start justify-between h-full max-sm:gap-4">
-            <div className="flex-1 max-sm:w-full pr-12 max-sm:pr-0">
+            <div className="flex-1 min-w-0 max-sm:w-full pr-12 max-sm:pr-0">
               <p className="text-gray-500 text-xl max-sm:text-lg mb-2">
-                {"I'm feeling"}
+                {"I am feeling"}
               </p>
               <h4 className="text-5xl max-sm:text-3xl font-bold text-gray-800 mb-12 max-sm:mb-6">
-                Very Happy
+                {config.label}
               </h4>
 
               <div className="flex items-start gap-4 max-sm:gap-3">
                 <div className="text-blue-500 text-5xl max-sm:text-3xl font-bold leading-none mt-1">
                   "
                 </div>
-                <p className="text-gray-700 italic text-xl max-sm:text-lg leading-relaxed pt-2">
-                  When your heart is full, share your light with the world.
-                </p>
+                <div className="text-gray-700 italic text-xl max-sm:text-lg leading-relaxed pt-2">
+                  <p className={showFullQuote ? "" : "line-clamp-3"}>{quote}</p>
+                  {quote.length > 1 && (
+                    <button
+                      className="text-indigo-600 mt-2 text-sm font-medium hover:underline"
+                      onClick={() => setShowFullQuote(!showFullQuote)}
+                    >
+                      {showFullQuote ? "Show Less" : "Read More"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="flex-shrink-0 max-sm:w-full max-sm:flex max-sm:justify-center">
               <div className="w-48 h-48 max-sm:w-32 max-sm:h-32 flex items-center justify-center">
                 <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Feeling%20Icon%20Container-bD3Ohd1Skd6lWdei6coeEdOnREsZnK.png"
-                  alt="Very Happy Emoji"
+                  src={config.quoteImg}
+                  alt={`${config.label} Emoji`}
                   className="w-full h-full object-contain"
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.nextSibling.style.display = "block";
-                  }}
                 />
-                <div
-                  className="w-48 h-48 max-sm:w-32 max-sm:h-32 bg-yellow-300 rounded-full flex items-center justify-center text-8xl max-sm:text-5xl"
-                  style={{ display: "none" }}
-                >
-                  😊
-                </div>
               </div>
             </div>
           </div>
@@ -158,7 +144,7 @@ export default function Insights({ onBack }) {
               </div>
               <span className="text-gray-600 font-medium">Sleep</span>
             </div>
-            <p className="text-4xl font-bold text-gray-800">9+ hours</p>
+            <p className="text-4xl font-bold text-gray-800">{sleepHours}</p>
           </div>
 
           {/* Reflection Section */}
@@ -186,16 +172,20 @@ export default function Insights({ onBack }) {
               </span>
             </div>
             <p className="text-gray-800 text-lg mb-4 leading-relaxed">
-              Woke up early and finally tackled a big project!
+              {journalEntry || "No journal entry was added."}
             </p>
-            <div className="space-x-3">
-              <span className="text-gray-500 italic">#Grateful</span>
-              <span className="text-gray-500 italic">#Optimistic</span>
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {feelings.map((feeling) => (
+                <span key={feeling} className="text-gray-500 italic">
+                  #{feeling}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
+      {/* Stats and Chart Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="bg-white rounded-2xl p-4 shadow-sm flex flex-col gap-6 pt-6">
           <StatsCard title="Average Mood" subtitle="(Last 5 check-ins)">
@@ -206,23 +196,19 @@ export default function Insights({ onBack }) {
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                     <img
-                      {...createMoodIcon(
-                        Math.round(comparison.current.mood) + 3,
-                      )}
+                      src={averages.mood.Icon}
+                      className="w-6 h-6"
+                      alt="average mood"
                     />
                   </div>
                   <span className="text-2xl font-bold text-gray-800">
-                    {dataService.getMoodLabel(
-                      Math.round(comparison.current.mood),
-                    )}
+                    {averages.mood.label}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700 pb-4">
-                  <span className="text-lg">
-                    {getTrendIcon(comparison.moodComparison)}
-                  </span>
+                  <span className="text-lg"></span>
                   <span className="text-sm font-medium">
-                    {getTrendText(comparison.moodComparison)}
+                    {averages.mood.comparison}
                   </span>
                 </div>
               </div>
@@ -232,19 +218,11 @@ export default function Insights({ onBack }) {
           <StatsCard title="Average Sleep" subtitle="(Last 5 check-ins)">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white p-5 rounded-xl pt-9">
               <div className="text-2xl font-bold mb-2 flex items-center gap-2">
-                💤 {comparison.current.sleep.toFixed(1)} Hours
+                💤 {averages.sleep.range}
               </div>
               <div className="text-sm opacity-90 flex items-center gap-1 pb-3">
-                {getTrendIcon(comparison.sleepComparison)}{" "}
-                {getTrendText(comparison.sleepComparison)
-                  .split(" ")
-                  .slice(0, 3)
-                  .join(" ")}
-                <br />
-                {getTrendText(comparison.sleepComparison)
-                  .split(" ")
-                  .slice(3)
-                  .join(" ")}
+                {averages.sleep.comparisonLine1} <br />{" "}
+                {averages.sleep.comparisonLine2}
               </div>
             </div>
           </StatsCard>
@@ -258,38 +236,38 @@ export default function Insights({ onBack }) {
           <div className="relative">
             <div className="absolute left-0 top-0 h-80 max-sm:h-60 flex flex-col justify-between text-sm max-sm:text-xs text-gray-600 -ml-2 max-sm:-ml-1">
               <div className="flex items-center gap-2 max-sm:gap-1 h-4">
-                <img src={sleepIcon} alt="Sleep icon" className="w-4 h-4" />
+                <span>💤</span>
                 <span className="max-sm:hidden">9+ hours</span>
                 <span className="sm:hidden">9+h</span>
               </div>
               <div className="flex items-center gap-2 max-sm:gap-1 h-4">
-                <img src={sleepIcon} alt="Sleep icon" className="w-4 h-4" />
+                <span>💤</span>
                 <span className="max-sm:hidden">7-8 hours</span>
                 <span className="sm:hidden">7-8h</span>
               </div>
               <div className="flex items-center gap-2 max-sm:gap-1 h-4">
-                <img src={sleepIcon} alt="Sleep icon" className="w-4 h-4" />
+                <span>💤</span>
                 <span className="max-sm:hidden">5-6 hours</span>
                 <span className="sm:hidden">5-6h</span>
               </div>
               <div className="flex items-center gap-2 max-sm:gap-1 h-4">
-                <img src={sleepIcon} alt="Sleep icon" className="w-4 h-4" />
+                <span>💤</span>
                 <span className="max-sm:hidden">3-4 hours</span>
                 <span className="sm:hidden">3-4h</span>
               </div>
               <div className="flex items-center gap-2 max-sm:gap-1 h-4">
-                <img src={sleepIcon} alt="Sleep icon" className="w-4 h-4" />
+                <span>💤</span>
                 <span className="max-sm:hidden">0-2 hours</span>
                 <span className="sm:hidden">0-2h</span>
               </div>
             </div>
 
             <div className="ml-24 max-sm:ml-12 h-80 max-sm:h-60 flex items-end justify-between gap-2 max-sm:overflow-x-auto">
-              {processedChartBars.map((bar, idx) => (
+              {processedChartBars.map((bar) => (
                 <ChartBar
-                  key={idx}
+                  key={bar.fullEntry.id || `insights-entry-${bar.date}`}
                   {...bar}
-                  onClick={(entry) => setSelectedEntry(entry)}
+                  onBarClick={() => handleBarClick(bar.fullEntry)}
                 />
               ))}
             </div>
@@ -297,12 +275,9 @@ export default function Insights({ onBack }) {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Mood Detail Modal */}
       {selectedEntry && (
-        <MoodDetailModal
-          entry={selectedEntry}
-          onClose={() => setSelectedEntry(null)}
-        />
+        <MoodDetailModal entry={selectedEntry} onClose={closeModal} />
       )}
     </PageLayout>
   );

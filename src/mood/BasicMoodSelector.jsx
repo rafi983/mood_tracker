@@ -1,55 +1,35 @@
 import React, { useState } from "react";
-import veryHappyIcon from "../assets/icon-very-happy-color.svg";
-import happyIcon from "../assets/icon-happy-color.svg";
-import neutralIcon from "../assets/icon-neutral-color.svg";
-import sadIcon from "../assets/icon-sad-color.svg";
-import verySadIcon from "../assets/icon-very-sad-color.svg";
+import { moodConfig } from "../utils/moodUtils";
+
+// Import the special color icons directly into this file
+import veryHappyIcon from "../assets/images/icon-very-happy-color.svg";
+import happyIcon from "../assets/images/icon-happy-color.svg";
+import neutralIcon from "../assets/images/icon-neutral-color.svg";
+import sadIcon from "../assets/images/icon-sad-color.svg";
+import verySadIcon from "../assets/images/icon-very-sad-color.svg";
+
+// Create a local mapping for these specific icons
+const localIcons = {
+  2: veryHappyIcon,
+  1: happyIcon,
+  0: neutralIcon,
+  "-1": sadIcon,
+  "-2": verySadIcon,
+};
 
 export default function BasicMoodSelector({ moodData, onNext }) {
-  const [selectedMood, setSelectedMood] = useState(
-    moodData?.basicMood || "Very Happy",
-  );
+  const [selectedMood, setSelectedMood] = useState(moodData?.basicMood || "0");
 
   const moodOptions = [
-    {
-      id: "very-happy",
-      label: "Very Happy",
-      icon: veryHappyIcon,
-      bgColor: "bg-orange-100",
-      emojiColor: "text-orange-500",
-    },
-    {
-      id: "happy",
-      label: "Happy",
-      icon: happyIcon,
-      bgColor: "bg-green-100",
-      emojiColor: "text-green-500",
-    },
-    {
-      id: "neutral",
-      label: "Neutral",
-      icon: neutralIcon,
-      bgColor: "bg-blue-100",
-      emojiColor: "text-blue-500",
-    },
-    {
-      id: "sad",
-      label: "Sad",
-      icon: sadIcon,
-      bgColor: "bg-purple-100",
-      emojiColor: "text-purple-500",
-    },
-    {
-      id: "very-sad",
-      label: "Very Sad",
-      icon: verySadIcon,
-      bgColor: "bg-pink-100",
-      emojiColor: "text-pink-500",
-    },
+    { value: "2", label: "Very Happy" },
+    { value: "1", label: "Happy" },
+    { value: "0", label: "Neutral" },
+    { value: "-1", label: "Sad" },
+    { value: "-2", label: "Very Sad" },
   ];
 
-  const handleMoodSelect = (mood) => {
-    setSelectedMood(mood);
+  const handleMoodSelect = (moodValue) => {
+    setSelectedMood(moodValue);
   };
 
   const handleContinue = () => {
@@ -65,23 +45,23 @@ export default function BasicMoodSelector({ moodData, onNext }) {
       <div className="space-y-1.5 mb-4 flex-1">
         {moodOptions.map((mood) => (
           <label
-            key={mood.id}
+            key={mood.value}
             className={`flex items-center justify-between p-1.5 rounded-lg border-2 cursor-pointer transition-all hover:shadow-sm ${
-              selectedMood === mood.label
+              selectedMood === mood.value
                 ? "border-blue-500 bg-blue-50"
                 : "border-gray-200 hover:border-gray-300"
             }`}
-            onClick={() => handleMoodSelect(mood.label)}
+            onClick={() => handleMoodSelect(mood.value)}
           >
             <div className="flex items-center gap-2">
               <div
                 className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                  selectedMood === mood.label
+                  selectedMood === mood.value
                     ? "border-blue-500 bg-blue-500"
                     : "border-gray-300"
                 }`}
               >
-                {selectedMood === mood.label && (
+                {selectedMood === mood.value && (
                   <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                 )}
               </div>
@@ -90,10 +70,10 @@ export default function BasicMoodSelector({ moodData, onNext }) {
               </span>
             </div>
             <div
-              className={`w-8 h-8 rounded-full ${mood.bgColor} flex items-center justify-center text-sm`}
+              className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm`}
             >
               <img
-                src={mood.icon}
+                src={localIcons[mood.value]}
                 alt={`${mood.label} icon`}
                 className="w-6 h-6"
               />
