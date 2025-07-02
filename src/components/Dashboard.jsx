@@ -148,44 +148,50 @@ export default function Dashboard({ onLogMoodClick }) {
           {/* Right Column - Trends Chart */}
           <div className="lg:col-span-2">
             <div className="bg-white shadow-lg border-0 rounded-2xl overflow-hidden h-full">
-              <div className="p-6 pb-6">
-                <h3 className="text-2xl font-semibold text-gray-800">
+              <div className="p-4 sm:p-6 pb-4 sm:pb-6">
+                <h3 className="text-lg sm:text-2xl font-semibold text-gray-800">
                   Mood and sleep trends
                 </h3>
               </div>
-              <div className="px-6 pb-6 h-full">
-                <div className="flex h-80">
+              <div className="px-4 sm:px-6 pb-6 sm:pb-6 h-full">
+                <div className="flex h-40 sm:h-64 md:h-80 relative">
                   {/* Y-axis labels */}
-                  <div className="flex flex-col justify-between py-4 pr-4 text-sm text-gray-600">
+                  <div className="flex flex-col justify-between py-2 sm:py-4 pr-2 sm:pr-4 text-xs sm:text-sm text-gray-600">
                     {sleepLabels.map((label, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <Moon className="w-4 h-4 text-gray-400" />
-                        <span>{label}</span>
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 sm:gap-2"
+                      >
+                        <Moon className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+                        <span className="hidden sm:inline">{label}</span>
+                        <span className="sm:hidden">{label.split(" ")[0]}</span>
                       </div>
                     ))}
                   </div>
 
                   {/* Chart area */}
                   <div className="flex-1 relative">
-                    <div className="absolute inset-0 flex items-end justify-between px-2 pb-8">
+                    <div className="absolute inset-0 flex items-end justify-between px-1 sm:px-2 pb-6 sm:pb-8">
                       {chartData.map((point, index) => (
                         <div key={index} className="flex flex-col items-center">
                           <div
-                            className="w-3 bg-blue-500 rounded-t-sm mb-2"
-                            style={{ height: `${point.value * 20}%` }}
+                            className="w-2 sm:w-3 bg-blue-500 rounded-t-sm mb-1 sm:mb-2"
+                            style={{ height: `${point.value * 15}%` }}
                           />
                         </div>
                       ))}
                     </div>
 
                     {/* X-axis labels */}
-                    <div className="absolute -bottom-8 left-0 right-0 flex justify-between px-2 text-xs text-gray-500">
+                    <div className="absolute bottom-0 left-0 right-0 flex justify-between px-1 sm:px-2 text-xs text-gray-500">
                       {chartData.map((point, index) => (
-                        <div
-                          key={index}
-                          className="text-center leading-tight whitespace-pre-line"
-                        >
-                          {point.date}
+                        <div key={index} className="text-center leading-tight">
+                          <span className="hidden sm:inline">
+                            {point.date.replace("\n", " ")}
+                          </span>
+                          <span className="sm:hidden">
+                            {point.date.split("\n")[1]}
+                          </span>
                         </div>
                       ))}
                     </div>
